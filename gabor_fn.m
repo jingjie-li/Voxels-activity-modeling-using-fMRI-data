@@ -1,4 +1,4 @@
-function gb=gabor_fn(theta,lambda,psi,gamma,x0,y0)
+function [gb,x,y,x_theta,y_theta]=gabor_fn(theta,lambda,psi,gamma,x0,y0)
 % produce a gabor wavelet for the given sf,angle,phase,posi
 if nargin == 4
     x0=0;
@@ -19,8 +19,10 @@ y=y-y0;
 x_theta=x*cos(theta)+y*sin(theta);
 y_theta=-x*sin(theta)+y*cos(theta);
 
-gb=exp(-.5*(x_theta.^2/sigma_x^2+y_theta.^2/sigma_y^2)).*cos(2*pi/lambda*x_theta+psi);
-gb(gb<10^-5&gb>-10^-5)=0;
+gaussian_mask = exp(-.5*(x_theta.^2/sigma_x^2+y_theta.^2/sigma_y^2));
+gaussian_mask(gaussian_mask < (max(gaussian_mask(:))*0.01)) = 0;
+
+gb = gaussian_mask .*cos(2*pi/lambda*x_theta+psi);
 %size(x);
 %imshow(gb,[]);
 end
