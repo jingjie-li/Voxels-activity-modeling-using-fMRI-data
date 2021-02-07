@@ -19,8 +19,12 @@ y=y-y0;
 x_theta=x*cos(theta)+y*sin(theta);
 y_theta=-x*sin(theta)+y*cos(theta);
 
-gb=exp(-.5*(x_theta.^2/sigma_x^2+y_theta.^2/sigma_y^2)).*cos(2*pi/lambda*x_theta+psi);
-gb(gb<10^-5&gb>-10^-5)=0;
+gaussian_mask = exp(-.5*(x_theta.^2/sigma_x^2+y_theta.^2/sigma_y^2));
+gaussian_mask(gaussian_mask < (max(gaussian_mask(:))*0.01)) = 0;
+
+sinusoid = cos(2*pi/lambda*x_theta+psi);
+
+gb = gaussian_mask .* sinusoid;
 %size(x);
 %imshow(gb,[]);
 end
